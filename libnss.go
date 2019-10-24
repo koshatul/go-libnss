@@ -1,4 +1,5 @@
 package nss
+
 // #include <nss.h>
 import "C"
 import "errors"
@@ -15,20 +16,21 @@ type Status int32
 
 var ErrNotFound error = errors.New("not found")
 
-
-type Implementation interface{
+type Implementation interface {
 	//PasswdOpen() (Status)
 	//PasswdClose() (Status)
 	PasswdAll() (Status, []Passwd)
 	PasswdByName(name string) (Status, Passwd)
 	PasswdByUid(uid uint) (Status, Passwd)
 
+	HostAll() (Status, []Host)
+
 	//GroupOpen() (Status)
 	//GroupClose() (Status)
 	GroupAll() (Status, []Group)
 	GroupByName(name string) (Status, Group)
 	GroupByGid(gid uint) (Status, Group)
-	
+
 	//ShadowOpen() (Status)
 	//ShadowClose() (Status)
 	ShadowAll() (Status, []Shadow)
@@ -36,7 +38,7 @@ type Implementation interface{
 }
 
 // Prototype structure for people to embed
-type LIBNSS struct {}
+type LIBNSS struct{}
 
 // setpwent
 /*func (self LIBNSS) PasswdOpen() (Status) {
@@ -63,6 +65,11 @@ func (self LIBNSS) PasswdByUid(uid uint) (Status, Passwd) {
 	return StatusUnavail, Passwd{}
 }
 
+// gethostent
+func (self LIBNSS) HostAll() (Status, []Host) {
+	return StatusUnavail, []Host{}
+}
+
 // setgrent
 /*func (self LIBNSS) GroupOpen() (Status) {
 	return StatusUnavail
@@ -75,7 +82,7 @@ func (self LIBNSS) GroupClose() (Status) {
 
 // endgrent
 func (self LIBNSS) GroupAll() (Status, []Group) {
-	return StatusUnavail, []Group{ }
+	return StatusUnavail, []Group{}
 }
 
 // getgrent
@@ -114,6 +121,3 @@ var implemented Implementation
 func SetImpl(i Implementation) {
 	implemented = i
 }
-
-
-
